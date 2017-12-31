@@ -6,7 +6,7 @@ defmodule ThunderBorg.Motors do
   @command_set_b_fwd            11    # Set motor B PWM rate in a forwards direction
   @command_set_b_rev            12    # Set motor B PWM rate in a reverse direction
 
-  def handle_drive(direction, power) do
+  def drive(direction, power) do
     case direction do
       "forward" ->
         [set_motor_1(power), set_motor_2(power)]
@@ -19,18 +19,13 @@ defmodule ThunderBorg.Motors do
     end
   end
 
-  def handle_stop() do
+  def stop() do
     [set_motor_1(0), set_motor_2(0)]
   end
 
   defp set_motor_1(power) when power < 0 do
     IO.puts("Reversing motor 1")
     {@command_set_a_rev, pwm(power)}
-  end
-
-  defp set_motor_1(power = 0) do
-    IO.puts("Stopping motor 1")
-    {@command_set_a_fwd, pwm(power)}
   end
 
   defp set_motor_1(power) do
@@ -41,11 +36,6 @@ defmodule ThunderBorg.Motors do
   defp set_motor_2(power) when power < 0 do
     IO.puts("Reversing motor 2")
     {@command_set_b_rev, pwm(power)}
-  end
-
-  defp set_motor_2(power = 0) when power == 0 do
-    IO.puts("Stopping motor 2")
-    {@command_set_b_fwd, pwm(power)}
   end
 
   defp set_motor_2(power) do

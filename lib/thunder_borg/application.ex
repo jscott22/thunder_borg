@@ -8,8 +8,8 @@ defmodule ThunderBorg.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
+      worker(ThunderBorg.I2C, []),
       worker(ThunderBorg, [])
-      # worker(Fw.Worker, [arg1, arg2, arg3]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
