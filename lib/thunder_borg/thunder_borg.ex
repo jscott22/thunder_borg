@@ -2,12 +2,8 @@ defmodule ThunderBorg do
 
   use GenServer
 
-  alias ThunderBorg.I2C
-  alias ThunderBorg.Motors
-
-  @command_get_id               0x99
-  @i2c_max_len                  6
-
+  alias ThunderBorg.{Detection, I2C, Motors}
+  
   defmodule State do
 
     @i2c_id_thunderborg 0x15
@@ -25,9 +21,8 @@ defmodule ThunderBorg do
     IO.puts("Loading ThunderBorg on bus #{state.bus_number}, address #{state.i2c_address}")
 
     found_chip = init_borg(state.i2c_address)
-    updated_state = %State{state | found_chip: found_chip}
 
-    {:ok, updated_state}
+    {:ok, %State{state | found_chip: found_chip}}
   end
 
    ### CLIENT
@@ -66,30 +61,8 @@ defmodule ThunderBorg do
 
   ### INIT
 
-  def init_borg(i2c_address) do
-    find_borg(i2c_address)
-  end
-
-  def find_borg(i2c_address) do
-    data = I2C.read(@command_get_id)
-    recv = :binary.bin_to_list(data)
-    handle_found_device(recv, i2c_address, length(recv) == @i2c_max_len)
-  end
-
-  def handle_found_device(recv, i2c_address, true) do
-    case Enum.at(recv, 1) == i2c_address do
-      true ->
-        IO.puts("Found ThunderBorg at #{i2c_address}")
-        true
-      false ->
-        IO.puts("Found a device at #{i2c_address}, but it is not a ThunderBorg")
-        false
-    end
-  end
-
-  def handle_found_device(_recv, i2c_address, false) do
-    IO.puts("Missing ThunderBorg at #{i2c_address}")
-    false
+  defp init_borg(i2c_address) do
+    Detection.find_borg(i2c_address)
   end
 
 end
