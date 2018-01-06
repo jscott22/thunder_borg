@@ -15,17 +15,20 @@ defmodule ThunderBorg.MixProject do
   def application do
     [
       mod: {ThunderBorg.Application, []}
-      # extra_applications: [:logger]
+      # extra_applications: applications(Mix.env)
     ]
   end
+
+  # defp applications(:prod), do: [:elixir_ale | general_apps()]
+  # defp applications(_), do: general_apps()
+
+  # defp general_apps, do: [:logger]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:elixir_ale, "~> 1.0"},
-      # {:dummy_nerves, path: "../dummy_nerves", only: [:dev, :test]}
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:elixir_ale, "~> 1.0", only: :prod},
+      {:dummy_nerves, path: "../dummy_nerves", only: [:dev, :test]}
     ]
   end
 end

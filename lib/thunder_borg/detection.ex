@@ -6,8 +6,9 @@ defmodule ThunderBorg.Detection do
   @i2c_max_len                  6
   
   def find_borg(i2c_address) do
-    data = I2C.read(@command_get_id)
-    recv = :binary.bin_to_list(data)
+    recv = I2C.read(@command_get_id)
+    |> :binary.bin_to_list()
+    
     handle_found_device(recv, i2c_address, length(recv) == @i2c_max_len)
   end
 

@@ -9,7 +9,7 @@ defmodule ThunderBorg do
     @i2c_id_thunderborg 0x15
     @bus_number 1
 
-    defstruct bus_number: @bus_number, i2c_address: @i2c_id_thunderborg, found_chip: false, i2c_pid: nil
+    defstruct bus_number: @bus_number, i2c_address: @i2c_id_thunderborg, found_chip: false
   end
 
   def start_link() do
