@@ -2,26 +2,12 @@ defmodule ThunderBorg.I2C do
 
   use GenServer
 
-  # alias DummyNerves.I2C
-  # alias ElixirALE.I2C
-
-  defmodule Config do
-    def i2c_module() do
-      if Mix.env() == :prod do
-        ElixirALE.I2C
-      else
-        DummyNerves.I2C
-      end
-    end
-  end
- 
-
   @i2c_max_len 6
-  @i2c Config.i2c_module()
+  @i2c Application.get_env(:thunder_borg, :i2c, nil)
 
   ## Client
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
@@ -40,8 +26,18 @@ defmodule ThunderBorg.I2C do
     {:ok, %{i2c: pid}}
   end
 
-  def handle_cast({:write, commands}, state) do 
+  def handle_cast({:write, commands}, state) when is_list(commands) do 
     write_commands(commands, state.i2c)
+    {:noreply, state}
+  end
+
+  def handle_cast({:write, {command, data}}, state) do
+    raw_write(state.i2c, {command, data})
+    {:noreply, state}
+  end
+
+  def handle_cast({:write, command}, state) do
+    raw_write(state.i2c, command)
     {:noreply, state}
   end
 
@@ -56,7 +52,6 @@ defmodule ThunderBorg.I2C do
   end
 
   defp raw_write(pid, {command, data}) do
-    IO.inspect(<< command, data >>)
     @i2c.write(pid, << command, data >>)
   end
 
