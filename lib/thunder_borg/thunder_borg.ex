@@ -5,16 +5,12 @@ defmodule ThunderBorg do
   alias ThunderBorg.{Detection, I2C, Motors}
   
   defmodule State do
-
-    @i2c_id_thunderborg 0x15
-    @bus_number 1
-
-    defstruct bus_number: @bus_number, i2c_address: @i2c_id_thunderborg, found_chip: false
+    defstruct bus_number: nil, i2c_address: nil, found_chip: false
   end
 
-  def start_link(_) do
+  def start_link(%{bus_number: bus_number, i2c_address: i2c_address}) do
     IO.puts("starting")
-    GenServer.start_link(__MODULE__, %State{}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, %State{bus_number: bus_number, i2c_address: i2c_address}, name: __MODULE__)
   end
 
   def init(state) do
@@ -37,7 +33,16 @@ defmodule ThunderBorg do
     GenServer.cast(__MODULE__, :stop)
   end
 
+  def debug() do
+    GenServer.call(__MODULE__, :debug)
+    |> IO.inspect()
+  end
+
   ### SERVER
+
+  def handle_call(:debug, _from, state) do
+    {:reply, state, state}
+  end
 
   def handle_cast({:drive, {degree, speed}}, state) do
     Motors.drive({degree, speed})

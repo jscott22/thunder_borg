@@ -5,10 +5,14 @@ defmodule ThunderBorg.I2C do
   @i2c_max_len 6
   @i2c Application.get_env(:thunder_borg, :i2c, nil)
 
+  defmodule State do
+    defstruct i2c_address: nil
+  end
+
   ## Client
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  def start_link(%{i2c_address: i2c_address}) do
+    GenServer.start_link(__MODULE__, %State{i2c_address: i2c_address}, name: __MODULE__)
   end
 
   def write(commands) do
@@ -21,8 +25,8 @@ defmodule ThunderBorg.I2C do
 
   ## Server
 
-  def init(_state) do
-    {:ok, pid} = @i2c.start_link("i2c-1", 0x15)
+  def init(%{i2c_address: i2c_address}) do
+    {:ok, pid} = @i2c.start_link("i2c-1", i2c_address)
     {:ok, %{i2c: pid}}
   end
 
