@@ -30,7 +30,7 @@ defmodule ThunderBorg.I2C do
     {:ok, %{i2c: pid}}
   end
 
-  def handle_cast({:write, commands}, state) when is_list(commands) do 
+  def handle_cast({:write, commands}, state) when is_list(commands) do
     write_commands(commands, state.i2c)
     {:noreply, state}
   end
@@ -56,14 +56,21 @@ defmodule ThunderBorg.I2C do
   end
 
   defp raw_write(pid, {command, data}) do
+    IO.puts("Writing command, data")
+    IO.inspect(command)
+    IO.inspect(data)
     @i2c.write(pid, << command, data >>)
   end
 
   defp raw_write(pid, command) do
+    IO.puts("Writing command")
+    IO.inspect(command)
     @i2c.write(pid, << command >>)
   end
 
   defp write_commands(commands, i2c) when is_list(commands) do
+    IO.puts("Writing list")
+    IO.inspect(commands)
     Enum.each(commands, &raw_write(i2c, &1))
   end
 

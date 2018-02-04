@@ -2,7 +2,7 @@ defmodule ThunderBorg.Application do
   use Application
 
   @bus_number 1
-  @i2c_address 0x36
+  @i2c_address 0x15
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications

@@ -9,7 +9,6 @@ defmodule ThunderBorg do
   end
 
   def start_link(%{bus_number: bus_number, i2c_address: i2c_address}) do
-    IO.puts("starting")
     GenServer.start_link(__MODULE__, %State{bus_number: bus_number, i2c_address: i2c_address}, name: __MODULE__)
   end
 
@@ -24,12 +23,10 @@ defmodule ThunderBorg do
    ### CLIENT
 
   def drive(degree, speed) do
-    IO.puts("Driving")
     GenServer.cast(__MODULE__, {:drive, {degree, speed}})
   end
 
   def stop() do
-    IO.puts("Stopping")
     GenServer.cast(__MODULE__, :stop)
   end
 
